@@ -1,0 +1,104 @@
+def encode_keyword(string, keyword):
+    ''' Encodes the specified `string` using a Keyword cipher with keyword `keyword`.
+    
+        Parameters
+        ----------
+        string : str
+            The string to encode.
+        
+        keyword : str
+            The keyword to use in the substitution alphabet.
+        
+        Returns
+        -------
+        str
+            The encoded string.
+       '''
+    # student code goes here
+    # make two dictionaries one with the original alphabet and one dictionary with the substitution alphabet
+    from collections import OrderedDict
+    og_alpha_dict = {'a':'a', 'b':'b', 'c':'c', 'd':'d', 'e':'e', 'f':'f', 'g':'g', 'h':'h', 'i':'i', 'j':'j', 'k':'k', 'l':'l', 'm':'m', 'n':'n', 'o':'o', 'p':'p', 'q':'q', 'r':'r', 's':'s', 't':'t', 'u':'u', 'v':'v', 'w':'w', 'x':'x', 'y':'y', 'z':'z'}
+    sub_alpha_dict = OrderedDict.fromkeys(og_alpha_dict)      # keeps the order of the original dictionary
+    
+    
+    index = 0           # initializing index 
+    first_ele = keyword[index]      # creates a new variable that equals the index of the nth keyword index
+    
+      # makes the unique keyword
+
+    un_keyword = ""
+
+    # loop to remove spaces, punctuation, and repeated letters from the key phrase
+    for each in keyword:
+        if each.isalpha() and each not in un_keyword:
+            un_keyword += each     # concatenates letters to new keyyword(it only has unique letters) and makes sure it is in the same order as the keyword
+    
+    #print("unique keyword",un_keyword)
+    
+    ex_alpha = [] # letters that must be moved over because of the keyword
+    
+    # for loop to change the values of all the keys until the length of the un_keyword is reached
+    for index in range(len(un_keyword)):
+        first_ele = un_keyword[index]      # assigns a variable to a letter from the keyword
+        letter = list(sub_alpha_dict.keys())       # makes a list of keys in the dictionary
+        letter_alpha = letter[index]       # variable equal to one specific key depending on the index of the list 
+        sub_alpha_dict[letter_alpha] = first_ele    # assigns a key to a letter from the keyword
+        #index +=1
+    
+    # appends all the unused values of the the substitute alphabet
+    index_key = 0   # keeps track of what the index of the keyword is 
+    index_alpha = 0 # keeps track of what the index of the alphabet is
+    first_ele = un_keyword[index_key]  # assigns a variable to a letter from the keyword
+    letter = list(sub_alpha_dict.keys())  # made a list of all the keys to make it easier to assign values
+    letter_alpha = letter[index_alpha]  # variable equal to one specific key depending on the index of the list 
+    
+    # a loop to add all the letters in the alphabet that do not have a proper value yet
+    # ex: key: "a" equals "t" now so the value of "a" needs to be add to the extra alphabet list
+    for index_alpha in range(len(sub_alpha_dict)):
+        index_key = 0
+        letter_alpha = letter[index_alpha]   
+        ex_alpha.append(letter_alpha)
+        
+        # removes the letters from the list that are in the keyword so that there will not be two letters with the same value
+        for index_key in range(len(un_keyword)):
+            first_ele = un_keyword[index_key] # assigns a variable to a letter from the keyword
+            if letter_alpha == first_ele:
+                ex_alpha.remove(letter_alpha)
+    
+    index_extra = 0 
+    # this is a loop to recreate the substitute alphabet with the keyword letters in it 
+    for index in range(len(sub_alpha_dict)):
+        #print("this is the index of the overall for loop", index)
+        #print ("this is the index of the ex_alpha",index_extra)
+        if index > (len(un_keyword) - 1):   # checks to see if all the keyword letters have been exhausted
+            first_alpha = ex_alpha[index_extra]   # assigns a variable to a letter from the extra alphabet list
+            letter = list(sub_alpha_dict.keys())       # makes a list of keys in the dictionary
+            letter_alpha = letter[index]
+            sub_alpha_dict[letter_alpha] = first_alpha    # assigns the next letter to the next element in the "extra" list
+            index_extra += 1
+        else:   # adds the values of the keyword letters to the substitute alphabet
+            first_ele = un_keyword[index]    # assigns a variable to a letter from the keyword
+            letter = list(sub_alpha_dict.keys())       # makes a list of keys in the dictionary
+            letter_alpha = letter[index]
+            sub_alpha_dict[letter_alpha] = first_ele    # assigns "a" to the first letter of the string
+    
+    #print(ex_alpha)  
+    #print ("sub_alpha_dict", sub_alpha_dict)    
+    index = 0
+    encode_string = ""
+    
+    # loop to encode the string with the new values from the substitute alphabet
+    while index < len(string):
+        first_ele = string[index]     # assigns a variable to a letter from the string
+        # checks to make sure that all the elements that it's concatenating are letters
+        if first_ele.isalpha():
+            encode_string += sub_alpha_dict.get(first_ele)
+        # concatentates in letters, spaces, and punctuation 
+        else: 
+            encode_string += str(first_ele)
+        
+        index += 1
+        # breaks loop index has reach max
+        if index == len(string):
+            break
+    return (encode_string)
